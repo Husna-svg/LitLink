@@ -67,9 +67,9 @@
             const title = document.getElementById("filterTitle").value;
 
             try {
-                const response = await fetch(`http://localhost:5001/books?author=${author}&title=${title}`);
-                const books = await response.json();
-                displayBooks(books);
+const response = await fetch(`http://localhost:5001/api/books?author=${author}&title=${title}`);
+const books = await response.json();
+displayBooks(books);
             } catch (error) {
                 console.error("Error fetching books:", error);
             }

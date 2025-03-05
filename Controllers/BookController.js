@@ -4,7 +4,15 @@
 const Book= require("../models/bookModel");
 const asyncHandler = require("express-async-handler");
 const getBooks =asyncHandler(async (req, res) => {
-  const books = await Book.find({});
+  
+    const { author, title } = req.query;
+
+    let filter = {};
+    if (author) filter.author = { $regex: author, $options: "i" }; // Case-insensitive search
+    if (title) filter.title = { $regex: title, $options: "i" };
+
+
+  const books = await Book.find(filter);
   res.status(200).json(books);
 });
 
