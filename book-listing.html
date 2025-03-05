@@ -21,11 +21,6 @@
         }
         h1 { font-size: 36px; font-weight: 700; }
         .container { margin-top: 30px; }
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
         .book-card {
             background-color: #fff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -42,8 +37,14 @@
             border-radius: 25px;
             font-weight: 600;
             transition: background 0.3s ease;
+            border: none;
         }
         .btn-custom:hover { background: linear-gradient(to right, #d35400, #e67e22); }
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -66,23 +67,39 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         async function searchBooks() {
-            const author = document.getElementById("filterAuthor").value;
-            const title = document.getElementById("filterTitle").value;
+            const author = document.getElementById("filterAuthor").value.trim();
+            const title = document.getElementById("filterTitle").value.trim();
+
+            let url = "http://localhost:5001/api/books";
+            const params = new URLSearchParams();
+            if (author) params.append("author", author);
+            if (title) params.append("title", title);
+            if (params.toString()) url += `?${params.toString()}`;
+
+            console.log("Fetching books from:", url); // Debugging log
 
             try {
-                const response = await fetch(`http://localhost:5001/api/books?author=${author}&title=${title}`);
+                const response = await fetch(url);
                 const books = await response.json();
+                
+                if (response.status === 404 || books.length === 0) {
+                    document.getElementById("book-list").innerHTML = "<p>No books found.</p>";
+                    return;
+                }
+
                 displayBooks(books);
             } catch (error) {
-                console.error("Error fetching books:", error);
+                console.error("❌ Error fetching books:", error);
+                document.getElementById("book-list").innerHTML = "<p>Something went wrong. Please try again.</p>";
             }
         }
 
         function displayBooks(books) {
             const bookList = document.getElementById("book-list");
-            bookList.innerHTML = "";
+            bookList.innerHTML = ""; // Clear previous results
 
             books.forEach(book => {
                 const bookCard = document.createElement("div");
@@ -107,5 +124,6 @@
             window.location.href = `exchange.html?book=${encodeURIComponent(bookTitle)}&owner=${encodeURIComponent(owner)}`;
         }
     </script>
+
 </body>
 </html>
