@@ -10,7 +10,7 @@ const bookSchema = mongoose.Schema({
         required: [true,"Please provide an author"],
     },
     genre: {
-        type: [string],
+        type: Array,
         required: [true,"Please provide a genre"],
     },
     condition: {
