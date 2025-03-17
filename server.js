@@ -11,6 +11,7 @@ mongoose.connect(MONGO_URI, {
 .catch(err => console.error("❌ MongoDB Connection Error:", err));
 */
 const express = require("express");
+const mongoose=require("mongoose");
 const dotenv=require("dotenv").config();
 const connectDB = require("./config/dbConnection");
 connectDB();
@@ -18,6 +19,12 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 app.use(express.json());
 app.use('/api/books', require('./routes/BookRoutes'));
+app.use('/api/users', require('./routes/UserRoutes'));
+//const chatRoutes=require('./Router/chatRoutes')
+//const messageRoutes=require('./Router/messageRoute')
+
+const cors = require('cors')
+const cookieParser=require('cookie-parser')
 
 
 app.use(errorHandler);
