@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Request Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .request-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .book-info {
+            margin-bottom: 15px;
+        }
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .book-author {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .request-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .requester {
+            color: #666;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-accept {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-reject {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .pending-label {
+            display: inline-block;
+            background-color: #f39c12;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .filter-options {
+            margin-bottom: 20px;
+        }
+        .new-request-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Request Management</h1>
+    <div class="filter-options">
+        <select id="filter-status">
+            <option value="all">All Requests</option>
+            <option value="pending" selected>Pending Requests</option>
+            <option value="approved">Approved Requests</option>
+            <option value="rejected">Rejected Requests</option>
+        </select>
+    </div>
+    
+    <div class="requests-container">
+        <!-- Request 1 -->
+        <div class="request-card">
+            <div class="book-info">
+                <div class="book-title">The Secret</div>
+                <div class="book-author">By: Rhonda Byrne</div>
+            </div>
+            <div class="request-details">
+                <div class="requester">Requested by: Ram<span class="pending-label">Pending</span></div>
+                <div class="action-buttons">
+                    <button class="btn btn-accept">Accept</button>
+                    <button class="btn btn-reject">Reject</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Request 2 -->
+        <div class="request-card">
+            <div class="book-info">
+                <div class="book-title">It ends with us</div>
+                <div class="book-author">Collene Hoover</div>
+            </div>
+            <div class="request-details">
+                <div class="requester">Requested by: Anu<span class="pending-label">Pending</span></div>
+                <div class="action-buttons">
+                    <button class="btn btn-accept">Accept</button>
+                    <button class="btn btn-reject">Reject</button>
+                </div>
+            </div>
+        </div>
+        
+        
+
+    <script>
+        // Add event listeners for the buttons
+        document.querySelectorAll('.btn-accept').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.request-card');
+                const pendingLabel = card.querySelector('.pending-label');
+                pendingLabel.textContent = 'Approved';
+                pendingLabel.style.backgroundColor = '#2ecc71';
+                
+                // Hide the action buttons
+                this.parentElement.style.display = 'none';
+                
+                // Show notification
+                alert('Request approved!');
+            });
+        });
+        
+        document.querySelectorAll('.btn-reject').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.request-card');
+                const pendingLabel = card.querySelector('.pending-label');
+                pendingLabel.textContent = 'Rejected';
+                pendingLabel.style.backgroundColor = '#e74c3c';
+                
+                // Hide the action buttons
+                this.parentElement.style.display = 'none';
+                
+                // Show notification
+                alert('Request rejected!');
+            });
+        });
+        
+        // Filter functionality
+        document.getElementById('filter-status').addEventListener('change', function() {
+            // This would filter the requests based on status in a real application
+            alert('Filter changed to: ' + this.value);
+        });
+        
+        // New request button
+        document.querySelector('.new-request-btn').addEventListener('click', function() {
+            alert('New book request form would open here');
+        });
+    </script>
+</body>
+</html>

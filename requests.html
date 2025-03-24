@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .requests-container {
+            margin-top: 20px;
+        }
+        .request-form {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .submit-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-button:hover {
+            background-color: #2980b9;
+        }
+        .request-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .request-info {
+            flex-grow: 1;
+        }
+        .request-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        .request-author {
+            font-style: italic;
+            color: #555;
+            margin: 0 0 5px 0;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-pending {
+            background-color: #f39c12;
+            color: white;
+        }
+        .status-approved {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .status-rejected {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .status-fulfilled {
+            background-color: #3498db;
+            color: white;
+        }
+        .section-title {
+            margin-top: 30px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div>
+    <h1>Book Requests</h1>
+    <div><button class="button"><a href="welcome.html" style="text-decoration: none; color: white;">Back</a></button></div>   
+    </div>
+    <div class="request-form">
+        <h2>Request a Book</h2>
+        <div class="field">
+            <label for="bookname">Book Name:</label>
+            <input type="text" id="bookname" name="bookname" placeholder="Enter book title">
+        </div>
+        
+        <div class="field">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" placeholder="Enter author name">
+        </div>
+        
+        <button class="submit-button">Submit Request</button>
+    </div>
+    
+    <h2 class="section-title">Your Requests</h2>
+    <div class="requests-container">
+        <div class="request-card">
+            <div class="request-info">
+                <p class="request-title">The Secret</p>
+                <p class="request-author">Rhonda Byrne</p>
+            </div>
+            <span class="status status-pending">Pending</span>
+        </div>
+        
+        <div class="request-card">
+            <div class="request-info">
+                <p class="request-title">It ends with us</p>
+                <p class="request-author">Collene Hoover</p>
+            </div>
+            <span class="status status-approved">Approved</span>
+        </div>
+        <!--
+        <div class="request-card">
+            <div class="request-info">
+                <p class="request-title">The Great Gatsby</p>
+                <p class="request-author">By: F. Scott Fitzgerald</p>
+            </div>
+            <span class="status status-fulfilled">Fulfilled</span>
+        </div>
+        
+        <div class="request-card">
+            <div class="request-info">
+                <p class="request-title">Lord of the Flies</p>
+                <p class="request-author">By: William Golding</p>
+            </div>
+            <span class="status status-rejected">Rejected</span>
+        </div>
+        -->
+    </div>
+</body>
+</html>

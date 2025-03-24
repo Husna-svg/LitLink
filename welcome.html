@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LitLink - Book Exchange</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            /* Soft, modern gradient background */
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ff 100%);
+            color: #2c3e50;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            font-weight: 500;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Rich gradient for header */
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .new{
+            background: none;
+        }
+
+        .tagline {
+            font-size: 24px;
+            font-weight: bold;
+            font-style: italic;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .logo h1 {
+            color: #ecf0f1;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo h1 span {
+            color: #ffd700;
+            font-weight: 800;
+        }
+
+        .nav-right button {
+            background: linear-gradient(to right, #e67e22, #f39c12);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-right button:hover {
+            background: linear-gradient(to right, #d35400, #e67e22);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(236, 240, 241, 0.9));
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .hero strong {
+            color: #e67e22;
+            font-weight: 700;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            padding: 30px;
+            margin: 30px auto;
+            width: 70%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .quote-box h3 {
+            color: #ecf0f1;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        #quote {
+            font-style: italic;
+            font-size: 20px;
+            color: #ecf0f1;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        nav {
+            padding: 20px;
+        }
+
+        nav button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav button:hover {
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ff 100%);
+            border-radius: 15px;
+        }
+
+        .modal-header {
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            color: #ecf0f1;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 700;
+        }
+
+        .form-control {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form-control:focus {
+            border-color: #2980b9;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .modal-body button {
+            background: linear-gradient(to right, #e67e22, #f39c12);
+            font-weight: 600;
+            border-radius: 25px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .modal-body button:hover {
+            background: linear-gradient(to right, #d35400, #e67e22);
+        }
+        .card {
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .card-img-top {
+            height: 250px;
+            width: 250px;
+            object-fit: cover;
+        }
+        .card-img-bottom{
+            height: 250px;
+            width: 250px;
+            object-fit: cover;
+        }
+        
+        .card-title {
+            font-weight: 600;
+        }
+        
+        .book-author {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .book-price {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        
+        .book-category {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+.folder-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* If using SVG and you want to change its color */
+.folder-icon {
+    stroke: white; /* or fill: white; depending on how the SVG is structured */
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 class="title">📚 Welcome to <span>LitLink</span> 📖</h1>
+            <p class="tagline">"Connecting Books, Connecting Minds."</p>
+        </div>
+        <div class="nav-right">
+                <button onclick="location.href='addbook.html'"><i class="fa fa-book"></i></button>
+                <button onclick="location.href='profile.html'"><i class="fa fa-user-circle-o"></i></button> 
+                <button id="bicon"><a href="index.html" style="text-decoration: none;color: white;"><i class="fa fa-power-off"></i></a></button>
+        </div>
+    </header>
+
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="mb-4">Featured Books</h1>
+        
+        <!-- Search and Filter -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search books...">
+                    <button class="btn btn-primary" type="button">Search</button>
+                </div>
+            </div>
+            <!--
+            <div class="col-md-6">
+                <select class="form-select">
+                    <option selected>All Categories</option>
+                    <option>Fiction</option>
+                    <option>Non-Fiction</option>
+                    <option>Science Fiction</option>
+                    <option>Mystery</option>
+                    <option>Biography</option>
+                </select>
+            </div>
+            -->
+        </div>
+        
+        
+        <!-- Books Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <!-- Book 1 -->
+            <div class="col">
+                <div class="card">
+                    <span class="book-category">Non-Fiction</span>
+                    <img src="it ends with us.webp" class="card-img-top card-img-bottom" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">It ends with us</h5>
+                        <p class="book-author">By Collene Hoover</p>
+                        <p class="card-text">It explores themes of domestic violence and emotional abuse.</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 2 -->
+            <div class="col">
+                <div class="card">
+                    <span class="book-category">Non-Fiction</span>
+                    <img src="Can we.jpg" class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">Can We Be Strangers Again</h5>
+                        <p class="book-author">Shrijeet Shandilya</p>
+                        <p class="card-text">A book about friendship, love, betrayal and choices in college life.</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 3 -->
+            <div class="col">
+                <div class="card">
+                    <span class="book-category">Non-Fiction</span>
+                    <img src="secret.jpg"  class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">The Secret</h5>
+                        <p class="book-author">By Rhonda Byrne</p>
+                        <p class="card-text">It is based on the law of attraction.</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 4 -->
+            <div class="col">
+                <div class="card">
+                    <span class="book-category">Non-fiction</span>
+                    <img src="atomic.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">Atomic Habits</h5>
+                        <p class="book-author">By James Clear</p>
+                        <p class="card-text">Most practical and insightful book on habit formation</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
+                           <!-- <button class="btn btn-outline-secondary">Details</button> -->
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Book 4 -->
+            <div class="col">
+                <div class="card">
+                    <span class="book-category">Fiction</span>
+                    <img src="moby-dick.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">Moby-Dick</h5>
+                        <p class="book-author">By Herman Melville</p>
+                        <p class="card-text">A story of a whale and the mad man who hunted it.</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Pagination 
+        <nav class="my-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+         -->
+    </div>
+   
+    
+    <!-- Footer 
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Book Library</h5>
+                    <p>Your source for the best books across all genres.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                        <li><a href="#" class="text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to our newsletter for updates on new releases.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Email address">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="mb-0">&copy; 2025 Book Library. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    -->
+   
+   
+
+
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchQuote();
+        });
+
+        function fetchQuote() {
+    fetch("https://zenquotes.io/api/random")
+        .then(response => response.json())
+        .then(data => {
+            let quoteData = data[0];  // Access the first quote from the array
+            document.getElementById("quote").innerText = `"${quoteData.q}" - ${quoteData.a}`;
+        })
+        .catch(() => {
+            // Fallback quote in case of an error
+            document.getElementById("quote").innerText = `"A book is a dream that you hold in your hands." - Neil Gaiman`;
+        });
+}
+    </script>
+</body>
+</html>

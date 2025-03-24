@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Added</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .books-container {
+            margin-top: 20px;
+        }
+        .book-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        .book-author {
+            font-style: italic;
+            color: #555;
+            margin: 0;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Books Added</h1>
+    <div class="books-container">
+        <!-- Sample books -->
+        <div class="book-card">
+            <p class="book-title">The secret</p>
+            <p class="book-author">Rhonda Byrne</p>
+        </div>
+        
+        <div class="book-card">
+            <p class="book-title">It ends with us</p>
+            <p class="book-author">Collene Hoover</p>
+        </div>
+    <button class="button"><a href="welcome.html" style="text-decoration: none; color: white;">Back</a></button>
+        
+        
+        <!-- If no books are added, uncomment this
+        <div class="no-books">
+            <p>No books have been added yet.</p>
+        </div>
+        -->
+    </div>
+</body>
+</html>
