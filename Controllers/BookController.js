@@ -114,14 +114,21 @@ const addBook = asyncHandler(async (req, res) => {
 });
 
 //@desc Request a book
-//@route POST /api/books/request/:id
+//@route POST /api/books/request/
 //@access Private
 
 const reqBook = asyncHandler(async(req, res) => {
   
     const userId = req.userId.id;
     const user=await User.findById(userId);
-    const { bookId } = req.params;
+    const { bookId } =req.body;
+    console.log("Received bookId:", bookId);
+    const mongoose = require("mongoose");
+
+if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    return res.status(400).json({ error: "Invalid book ID format" });
+}
+
     try{
         if (!userId) {
             return res.status(404).json({ error: "Un-authorized, log in first" });
@@ -135,6 +142,8 @@ const reqBook = asyncHandler(async(req, res) => {
             return res.status(400).json({error:"You already have a book"});
         }*/
         const book=await Book.findById(bookId);
+       
+
         if(!book){
             return res.status(404).json({error:"Book not found"});
         }
@@ -143,6 +152,8 @@ const reqBook = asyncHandler(async(req, res) => {
         }
 
         if (book.requester) {
+          console.log("Book requester ID:", book.requester);
+
             if (String(book.requester) === String(userId)) {
                 await Book.findOneAndUpdate({
                   _id: bookId },
@@ -159,7 +170,7 @@ const reqBook = asyncHandler(async(req, res) => {
         user.points -= 1;
         await user.save();
 
-        const updatedBook = await book.findOneAndUpdate(
+        const updatedBook = await Book.findOneAndUpdate(
           { _id: bookId, isAvailable: true, holder: null },
           { requester: userId },
           { new: true, runValidators: true }
@@ -186,13 +197,14 @@ const reqBook = asyncHandler(async(req, res) => {
 //@access Public
 
 const deleteBook = asyncHandler(async(req, res) => {
-  try{const book = await Book.findById(req.params.id);
+  try{const book = await Book.findById(req.body.id);
+    console.log("Received bookId:", req.body.id);
   if(!book) {
     res.status(404);
     throw new Error("Book not found");
   }
   if (book.isAvailable && !book.holder && !book.requester) {
-    const deletedBook = await book.findByIdAndDelete(req.params.bookId);
+    const deletedBook = await Book.findByIdAndDelete(req.body.id);
     if (!deletedBook) {
       return res.status(404).json({ error: 'Book not found' });
     }
@@ -209,12 +221,12 @@ const deleteBook = asyncHandler(async(req, res) => {
 //@route GET /api/books/requests
 //@access Private
 const viewRequests = asyncHandler(async (req, res) => {
-  const userId = req.userId;
+  const userId = req.userId.id;
   try {
     if (!userId) {
       return res.status(401).json({ error: 'Un-authorized' });
     }
-    const requests =await book.find({ owner: userId, isApproved: false, requester: { $ne: null } }).populate("requester", "name email");
+    const requests =await Book.find({ owner: userId, isApproved: false, requester: { $ne: null } }).populate("requester", "name email");
     if(!requests || requests.length === 0) {
       return res.status(404).json({ message: 'No requests found' });
     }
@@ -226,21 +238,27 @@ const viewRequests = asyncHandler(async (req, res) => {
 });
 
 //@desc Approve a request
-//@route PUT /api/books/approve/:id
+//@route PUT /api/books/approve/
 //@access Private
 
 const approveRequest = asyncHandler(async(req, res) => {
-  const userId = req.userId;
-    const { bookId } = req.params;
+  const userId = req.userId.id;
+    const { bookId } = req.body;
 
     try {
         if (!userId) {
             return res.status(401).json({ error: 'Un-authorized' });
         }
         
-        const book = await book.findById(bookId).populate("requester", "name email").populate("owner", "name email");
+        const book = await Book.findById(bookId).populate("requester", "name email").populate("owner", "name email");
+        console.log("Book Data:", book);
+console.log("Book Requester:", book.requester);
+
         if(!book){
             return res.status(404).json({ error: 'Book not found' });
+        }
+        if (!book.requester) {
+          return res.status(400).json({ error: "No requester found for this book" });
         }
         book.isApproved = true;
         book.holder = book.requester._id;
@@ -248,7 +266,7 @@ const approveRequest = asyncHandler(async(req, res) => {
         book.isAvailable = false;
         // console.log(book);
         await book.save();
-        const updatedBook = await book.findById(bookId).populate("requester", "name email").populate("owner", "name email").populate("holder", "name email");
+        const updatedBook = await Book.findById(bookId).populate("requester", "name email").populate("owner", "name email").populate("holder", "name email");
         if(!updatedBook){
             return res.status(404).json({ error: 'Book not found' });
         }

@@ -90,7 +90,8 @@ user:
 //@access private
 
 const getUserProfile = asyncHandler(async(req, res) => {
-    res.json(req.user);
+    console.log("User Data:", req.user);
+    res.json(req.userId);
     });
 
 
