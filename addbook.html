@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .book-details {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Details</h1>
+    
+    <div class="book-details">
+        <div class="field">
+            <label for="bookname">Book Name:</label>
+            <input type="text" id="bookname" name="bookname" placeholder="Enter book title">
+        </div>
+        
+        <div class="field">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" placeholder="Enter author name">
+        </div>
+        
+        <div class="field">
+            <label for="condition">Condition:</label>
+            <select id="condition" name="condition">
+                <option value="">Select condition</option>
+                <option value="new">New</option>
+                <option value="like-new">Like New</option>
+                <option value="very-good">Very Good</option>
+                <option value="good">Good</option>
+                <option value="acceptable">Acceptable</option>
+                <option value="poor">Poor</option>
+            </select>
+        </div>
+        
+        <div class="field">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="Enter shelf location">
+        </div>
+        
+        <button class="button"><a href="bookadded.html" style="text-decoration: none;color: white;">Save Book</a></button>
+    </div>
+</body>
+</html>
