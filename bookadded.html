@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books Added</title>
+    <title>Book Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
@@ -17,27 +17,27 @@
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
         }
-        .books-container {
+        .book-details {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
             margin-top: 20px;
         }
-        .book-card {
-            background-color: #f9f9f9;
-            border-left: 4px solid #3498db;
-            border-radius: 4px;
-            padding: 15px;
+        .field {
             margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .book-title {
-            font-size: 18px;
+        label {
             font-weight: bold;
-            margin: 0 0 5px 0;
-            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
         }
-        .book-author {
-            font-style: italic;
-            color: #555;
-            margin: 0;
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
         }
         .button {
             background-color: #3498db;
@@ -48,33 +48,156 @@
             cursor: pointer;
             font-size: 16px;
             margin-top: 10px;
+            width: 100%;
         }
         .button:hover {
             background-color: #2980b9;
         }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-    <h1>Books Added</h1>
-    <div class="books-container">
-        <!-- Sample books -->
-        <div class="book-card">
-            <p class="book-title">The secret</p>
-            <p class="book-author">Rhonda Byrne</p>
-        </div>
-        
-        <div class="book-card">
-            <p class="book-title">It ends with us</p>
-            <p class="book-author">Collene Hoover</p>
-        </div>
-    <button class="button"><a href="welcome.html" style="text-decoration: none; color: white;">Back</a></button>
-        
-        
-        <!-- If no books are added, uncomment this
-        <div class="no-books">
-            <p>No books have been added yet.</p>
-        </div>
-        -->
+    <h1>Book Details</h1>
+    
+    <div class="book-details">
+        <form id="bookForm">
+            <div class="field">
+                <label for="bookname">Book Name:</label>
+                <input type="text" id="bookname" name="bookname" placeholder="Enter book title" required>
+            </div>
+            
+            <div class="field">
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author" placeholder="Enter author name" required>
+            </div>
+            
+            <div class="field">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="">Select category</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="non-fiction">Non-Fiction</option>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <option value="technology">Technology</option>
+                    <option value="biography">Biography</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="isbn">ISBN:</label>
+                <input type="text" id="isbn" name="isbn" placeholder="Enter ISBN number" required>
+            </div>
+
+           
+            <div class="field">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" placeholder="Enter shelf location" required>
+            </div>
+           
+            
+            <div class="field">
+                <label for="condition">Condition:</label>
+                <select id="condition" name="condition" required>
+                    <option value="">Select condition</option>
+                    <option value="new">New</option>
+                    <option value="like-new">Like New</option>
+                    <option value="very-good">Very Good</option>
+                    <option value="good">Good</option>
+                    <option value="acceptable">Acceptable</option>
+                    <option value="poor">Poor</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Enter book description" rows="4" required></textarea>
+            </div>
+           
+            
+            <p id="message" class="error"></p>
+            <button type="submit" class="button">Save Book</button>
+        </form>
     </div>
+
+    <script>
+         document.addEventListener("DOMContentLoaded", async function () {
+            let message = document.getElementById("message");
+            message.textContent = "";
+
+            // Get logged-in user data from localStorage or API
+            let user = JSON.parse(localStorage.getItem("user"));
+
+            if (!user || !user.id) {
+                message.textContent = "Error: User not logged in!";
+                message.className = "error";
+                return;
+            }}
+        )
+        document.getElementById("bookForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            let message = document.getElementById("message");
+            message.textContent = "";
+            let title = document.getElementById("bookname").value.trim();
+            let author = document.getElementById("author").value.trim();
+            let category = document.getElementById("category").value;
+            let isbn = document.getElementById("isbn").value.trim();
+            let location = document.getElementById("location").value.trim();
+            let condition = document.getElementById("condition").value;
+            let desc = document.getElementById("description").value.trim();
+            let owner =  user.id;
+            
+            
+            
+
+            if (!bookname || !author || !category || !isbn || !description || !owner || !condition || !location) {
+               
+                message.textContent = "All fields are required.";
+                message.className = "error";
+                return;
+            }
+
+            try {
+                let response = await fetch("http://localhost:5001/api/books/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title,
+                        author,
+                        category,
+                        isbn,
+                        location,
+                        condition,
+                        desc,
+                        owner
+                    })
+                });
+
+                let data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Failed to save book.");
+                }
+
+                message.textContent = "Book saved successfully!";
+                message.className = "success";
+
+                setTimeout(() => {
+                    window.location.href = "bookadded.html";
+                }, 1000);
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = "error";
+            }
+        });
+    </script>
 </body>
 </html>

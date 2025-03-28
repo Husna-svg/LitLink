@@ -10,6 +10,7 @@ mongoose.connect(MONGO_URI, {
 .then(() => console.log("✅ Connected to MongoDB Compass"))
 .catch(err => console.error("❌ MongoDB Connection Error:", err));
 */
+const cors=require('cors');
 const express = require("express");
 const mongoose=require("mongoose");
 const dotenv=require("dotenv").config();
@@ -17,6 +18,7 @@ const connectDB = require("./config/dbConnection");
 connectDB();
 const errorHandler = require('./middleware/errorHandler');
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use('/api/books', require('./routes/BookRoutes'));
 app.use('/api/users', require('./routes/UserRoutes'));
@@ -24,7 +26,7 @@ app.use('/api/chat', require('./routes/ChatRoutes'));
 //const chatRoutes=require('./Router/chatRoutes')
 //const messageRoutes=require('./Router/messageRoute')
 
-const cors = require('cors')
+
 const cookieParser=require('cookie-parser')
 
 
