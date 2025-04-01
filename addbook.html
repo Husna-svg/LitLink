@@ -345,11 +345,13 @@
         
         if (contentType && contentType.includes('application/json')) {
             data = await response.json();
+
         } else {
             const text = await response.text();
             console.error('Non-JSON response:', text);
             data = { message: 'Server returned non-JSON response' };
         }
+        console.log(data); 
                 if (response.ok) {
                     alert('Book added successfully!');
                     window.location.href = 'bookadded.html';

@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Book = require("../models/bookModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 //@desc register user
@@ -90,9 +91,39 @@ user:
 //@access private
 
 const getUserProfile = asyncHandler(async(req, res) => {
-    console.log("User Data:", req.user);
-    res.json(req.userId);
-    });
+    console.log("User Data:", req.userId);
+    try {
+        // req.user is set by the auth middleware after verifying token
+        const user = await User.findById(req.userId.id).select('-password'); // Exclude password
 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-module.exports = {registerUser, loginUser, getUserProfile};
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+   
+    );
+
+const getmybooks= asyncHandler(async(req, res) => {
+    const userId=req.userId.id;
+    try {
+       if(!userId){
+        return res.status(404).json({error:"Un-authorized,log in first"}) 
+       }
+       const books=await Book.find({owner:userId});//.populate("holder","name email")
+       if(!books || books.length===0){
+        return res.status(404).json({message:"No books found"})
+       }
+       res.status(200).json(books);
+    } catch (error) {
+        console.log("error in myBooks : ",error);
+        res.status(500).json({ error: "Internal server error in myBooks" });
+    }
+})
+    ;
+module.exports = {registerUser, loginUser, getUserProfile, getmybooks};

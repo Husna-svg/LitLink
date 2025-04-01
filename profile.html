@@ -38,6 +38,12 @@
             margin-right: 20px;
             font-size: 36px;
             color: #666;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .profile-info {
             flex-grow: 1;
@@ -100,6 +106,20 @@
             margin-right: 10px;
             font-size: 18px;
         }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        .error-message {
+            color: #d9534f;
+            text-align: center;
+            padding: 15px;
+            margin: 10px 30px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+        }
         @media (max-width: 600px) {
             .profile-stats {
                 flex-direction: column;
@@ -112,52 +132,193 @@
 </head>
 <body>
     <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-avatar">CV</div>
-            <div class="profile-info">
-                <h1 class="profile-name">Chandana</h1>
-                <p class="profile-email">chandana@gmail.com</p>
+        <div id="loading" class="loading">Loading profile data...</div>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        
+        <div id="profile-content" style="display: none;">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profile-avatar">
+                    <!-- Avatar will be set by JavaScript -->
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profile-name">Loading...</h1>
+                    <p class="profile-email" id="profile-email">Loading...</p>
+                </div>
             </div>
-        </div>
 
-        <div class="profile-stats">
-            <div class="stat-box">
-                <div class="stat-value">200</div>
-                <div class="stat-label">Points Earned</div>
+            <div class="profile-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="points-value">0</div>
+                    <div class="stat-label">Points Earned</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="books-value">0</div>
+                    <div class="stat-label">Books Added</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="requests-value">0</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
             </div>
-            <div class="stat-box">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Books Added</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value">1</div>
-                <div class="stat-label">Pending Requests</div>
-            </div>
-        </div>
 
-        <div class="profile-buttons">
-            <button class="profile-button">
-                <a href="requests.html" style="text-decoration: none; color: white;">My Requests</a>
-            </button>
-            <button class="profile-button"><a href="bookadded.html" style="text-decoration: none; color: white;">
-                Books
-            </a> 
-            </button>
-               
-            </button>
-            <button class="profile-button">
-                <a href="activerequests.html" style="text-decoration: none; color: white;">
+            <div class="profile-buttons">
+                <button class="profile-button" id="my-requests-btn">
+                    My Requests
+                </button>
+                <button class="profile-button" id="my-books-btn">
+                    My Books
+                </button>
+                <button class="profile-button" id="book-requests-btn">
                     Book Requests
-                </a> 
-               
-            </button>
-            <button class="profile-button">
-                <a href="welcome.html" style="text-decoration: none; color: white;">
+                </button>
+                <button class="profile-button" id="back-btn">
                     Back
-                </a> 
-               
-            </button>
+                </button>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // If no token, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Fetch user profile data
+            fetchUserProfile(token);
+        });
+
+        async function fetchUserProfile(token) {
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error-message');
+            const profileContent = document.getElementById('profile-content');
+            
+            try {
+                // API call to fetch user profile
+                const response = await fetch('http://localhost:5001/api/users/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+
+                const userData = await response.json();
+                console.log('Received user data:', userData);
+                if (userData) {
+                    displayUserData(userData);
+                    
+                    // Fetch user statistics (books, requests, points)
+                    await fetchUserStats(token);
+                    
+                    // Hide loading, show content
+                    loadingElement.style.display = 'none';
+                    profileContent.style.display = 'block';
+                } else {
+                    throw new Error('Invalid profile data received');
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                loadingElement.style.display = 'none';
+                errorElement.textContent = error.message || 'Failed to load profile data. Please try again.';
+                errorElement.style.display = 'block';
+            }
+        }
+
+        async function fetchUserStats(token) {
+            try {
+        // Get user points directly from profile data (assuming it's already loaded)
+        const pointsValue = document.getElementById('points-value');
+        
+        // Fetch books added by the current user
+        const booksResponse = await fetch('http://localhost:5001/api/users/mybooks', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!booksResponse.ok) {
+            throw new Error('Failed to fetch user books');
+        }
+
+        const booksData = await booksResponse.json();
+        const booksCount = booksData.length || 0;
+        document.getElementById('books-value').textContent = booksCount;
+        
+        // Fetch requests where current user is the owner
+        const requestsResponse = await fetch('http://localhost:5001/api/books/requests', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!requestsResponse.ok) {
+            throw new Error('Failed to fetch user requests');
+        }
+
+        const requestsData = await requestsResponse.json();
+        // Filter pending requests only
+        const pendingRequestsCount = requestsData.length;
+        document.getElementById('requests-value').textContent = pendingRequestsCount;
+        
+    } catch (error) {
+        console.error('Error fetching user statistics:', error);
+        // Don't show error for stats, just log it
+    }
+}
+
+
+        function displayUserData(userData) {
+            const user = userData.user || userData;
+    
+    // Update profile name and email
+    document.getElementById('profile-name').textContent = `${user.name || ''}`.trim() || 'User';
+    document.getElementById('profile-email').textContent = user.email || '';
+    
+    // Set avatar - either image or initials
+    const avatarElement = document.getElementById('profile-avatar');
+    if (user.profilePicture) {
+        avatarElement.innerHTML = `<img src="${user.profilePicture}" alt="Profile Picture">`;
+    } else {
+        // Create initials from name
+        const name = user.name || '';
+        
+        const initials = name.charAt(0).toUpperCase();
+        avatarElement.textContent = initials || 'U';
+    }
+    
+    // Set points value from the user model
+    document.getElementById('points-value').textContent = user.points || 0;
+}
+
+        // Add event listeners for buttons
+        document.getElementById('my-requests-btn').addEventListener('click', function() {
+            window.location.href = 'requests.html';
+        });
+
+        document.getElementById('my-books-btn').addEventListener('click', function() {
+            window.location.href = 'bookadded.html';
+        });
+
+        document.getElementById('book-requests-btn').addEventListener('click', function() {
+            window.location.href = 'activerequests.html';
+        });
+
+        document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = 'welcome.html';
+        });
+    </script>
 </body>
 </html>
