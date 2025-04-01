@@ -24,9 +24,10 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
         let data = await response.json();
 
-        if (response.ok) {
+        if (response.ok && data.accessToken) {
             // Store token in localStorage
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("token", data.accessToken);
+            console.log(data.accessToken); // Debug log
             alert("Login successful!");
             window.location.href = "welcome.html"; // Redirect after login
         } else {

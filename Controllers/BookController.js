@@ -60,7 +60,15 @@ const addBook = asyncHandler(async (req, res) => {
   try {
       const userId = req.userId.id;
       console.log("User ID from Token:", req.userId); // Debug log
-      const { title, author, category, isbn,location,condition,desc,owner} = req.body;
+
+      console.log(req.body); // ✅ Debugging: Check if req.body is received
+      console.log(req.files); // ✅ Debugging: Check if files are received
+
+      if (!req.files || !req.files.frontPage || !req.files.backPage) {
+          return res.status(400).json({ message: 'Front and Back images are required' });
+      }
+
+      const { title, author, category, isbn,location,condition,desc} = req.body;
       const frontPage = req.files['frontPage'] ? req.files['frontPage'][0].filename :"default-front.jpg";
       const backPage = req.files['backPage'] ? req.files['backPage'][0].filename : "default-back.jpg";
       if (!location || !condition) {
@@ -72,7 +80,7 @@ const addBook = asyncHandler(async (req, res) => {
       if (!frontPage || !backPage) {
           return res.status(400).json({ error: 'Incomplete book images.' });
       }
-      if (!title || !author || !isbn || !category || !location || !condition || !desc || !owner
+      if (!title || !author || !isbn || !category || !location || !condition || !desc
           ) {
           return res.status(400).json({ error: 'Incomplete book details.' });
       };
@@ -100,7 +108,7 @@ const addBook = asyncHandler(async (req, res) => {
       });
 
       const getNewBook = await newBook.populate("owner", "name email");
-      res.status(201).json({
+      res.status(200).json({
         message: "Book created successfully! You earned 1 point.",
         points: user.points,
         getNewBook
