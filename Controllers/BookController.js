@@ -25,10 +25,10 @@ const getBooks =asyncHandler(async (req, res) => {
     if (req.query.category) {
       query.category = req.query.category;
     }
-    console.log("Query:", query); // Debugging query
+    //console.log("Query:", query); // Debugging query
     // Fetch books and populate owner details
     const books = await Book.find(query).populate('owner', 'name email');
-    console.log("Books Found:", books); // Debugging response
+   // console.log("Books Found:", books); // Debugging response
     res.status(200).json(books);
   } catch (error) {
     console.error("Error fetching books:", error);
@@ -89,7 +89,7 @@ const addBook = asyncHandler(async (req, res) => {
       if (!user) {
           return res.status(404).json({ error: "User not found" });
       }
-      user.points += 1; // Add 1 point for adding a book
+      user.points++; // Add 1 point for adding a book
       await user.save();
 
 
@@ -175,7 +175,7 @@ if (!mongoose.Types.ObjectId.isValid(bookId)) {
             }
         }
 
-        user.points -= 1;
+        user.points--;
         await user.save();
 
         const updatedBook = await Book.findOneAndUpdate(
@@ -285,6 +285,20 @@ console.log("Book Requester:", book.requester);
     }
 });
 
- 
-module.exports = {getBooks, getBook, addBook, reqBook, deleteBook, viewRequests, approveRequest};
+ const mysent= asyncHandler(async(req, res) => {
+  try {
+    // Find all book requests where the requestedBy field matches the current user's ID
+    const bookRequests = await Book.find({ requester: req.userId.id })
+        .sort({ createdAt: -1 }) // Sort by creation date, newest first
+        .populate('owner', 'name') ;// Populate the requestedFrom field with user name
+       // .exec();
+        
+    // Return the book requests
+    res.json(bookRequests);
+} catch (err) {
+    console.error('Error fetching sent book requests:', err.message);
+    res.status(500).json({ message: 'Server error while fetching sent book requests' });
+}
+});
+module.exports = {getBooks, getBook, addBook, reqBook, deleteBook, viewRequests, approveRequest,mysent};
 

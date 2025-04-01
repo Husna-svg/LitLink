@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Requests</title>
+    <title>Sent Book Requests</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,6 +79,11 @@
             color: #555;
             margin: 0 0 5px 0;
         }
+        .request-date {
+            font-size: 12px;
+            color: #777;
+            margin: 0;
+        }
         .status {
             padding: 5px 10px;
             border-radius: 20px;
@@ -102,6 +107,10 @@
             background-color: #3498db;
             color: white;
         }
+        .status-cancelled {
+            background-color: #95a5a6;
+            color: white;
+        }
         .section-title {
             margin-top: 30px;
             color: #2c3e50;
@@ -121,62 +130,147 @@
         .button:hover {
             background-color: #2980b9;
         }
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .cancel-btn:hover {
+            background-color: #c0392b;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .no-requests {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div>
-    <h1>Book Requests</h1>
-    <div><button class="button"><a href="welcome.html" style="text-decoration: none; color: white;">Back</a></button></div>   
-    </div>
-    <div class="request-form">
-        <h2>Request a Book</h2>
-        <div class="field">
-            <label for="bookname">Book Name:</label>
-            <input type="text" id="bookname" name="bookname" placeholder="Enter book title">
-        </div>
-        
-        <div class="field">
-            <label for="author">Author:</label>
-            <input type="text" id="author" name="author" placeholder="Enter author name">
-        </div>
-        
-        <button class="submit-button">Submit Request</button>
+        <h1>Sent Book Requests</h1>
+        <div><button class="button"><a href="welcome.html" style="text-decoration: none; color: white;">Back</a></button></div>   
     </div>
     
-    <h2 class="section-title">Your Requests</h2>
+    <h2 class="section-title">Requests You've Sent</h2>
     <div class="requests-container">
-        <div class="request-card">
-            <div class="request-info">
-                <p class="request-title">The Secret</p>
-                <p class="request-author">Rhonda Byrne</p>
-            </div>
-            <span class="status status-pending">Pending</span>
-        </div>
-        
-        <div class="request-card">
-            <div class="request-info">
-                <p class="request-title">It ends with us</p>
-                <p class="request-author">Collene Hoover</p>
-            </div>
-            <span class="status status-approved">Approved</span>
-        </div>
-        <!--
-        <div class="request-card">
-            <div class="request-info">
-                <p class="request-title">The Great Gatsby</p>
-                <p class="request-author">By: F. Scott Fitzgerald</p>
-            </div>
-            <span class="status status-fulfilled">Fulfilled</span>
-        </div>
-        
-        <div class="request-card">
-            <div class="request-info">
-                <p class="request-title">Lord of the Flies</p>
-                <p class="request-author">By: William Golding</p>
-            </div>
-            <span class="status status-rejected">Rejected</span>
-        </div>
-        -->
+        <!-- Request cards will be loaded dynamically -->
+        <div class="loading">Loading your sent requests...</div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token'); // Get JWT Token
+            if (!token) {
+                alert('You are not logged in!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5001/api/books/mysent', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const requests = await response.json();
+                
+                if (response.ok) {
+                    const container = document.querySelector('.requests-container');
+                    container.innerHTML = ''; // Clear existing content
+                    
+                    if (!requests || requests.length === 0) {
+                        container.innerHTML = '<div class="no-requests">You haven\'t sent any book requests yet.</div>';
+                        return;
+                    }
+                    
+                    requests.forEach(request => {
+                        const requestElement = document.createElement('div');
+                        requestElement.className = 'request-card';
+                        requestElement.innerHTML = `
+                            <div class="request-info">
+                                <p class="request-title">${request.title}</p>
+                                <p class="request-author">${request.author || 'Unknown Author'}</p>
+                                <p class="request-date">Requested: ${formatDate(request.createdAt)}</p>
+                                <p>Sent to: ${request.owner.name || 'Another user'}</p>
+                            </div>`
+                            
+                        
+                        container.appendChild(requestElement);
+                    });
+                    
+                    // Setup cancel buttons
+                    document.querySelectorAll('.cancel-btn').forEach(button => {
+                        button.addEventListener('click', async (e) => {
+                            const requestId = e.target.getAttribute('data-id');
+                            if (confirm('Are you sure you want to cancel this request?')) {
+                                await cancelRequest(requestId);
+                            }
+                        });
+                    });
+                } else {
+                    console.error('Error:', requests.message);
+                    document.querySelector('.requests-container').innerHTML = 
+                        `<div class="no-requests">Error loading requests: ${requests.message || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                console.error('Failed to fetch sent book requests:', error);
+                document.querySelector('.requests-container').innerHTML = 
+                    '<div class="no-requests">Failed to connect to the server. Please try again later.</div>';
+            }
+        });
+        
+        async function cancelRequest(requestId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/book-requests/${requestId}/cancel`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Request cancelled successfully!');
+                    // Reload the page to refresh the requests
+                    window.location.reload();
+                } else {
+                    alert(`Error: ${data.message || 'Failed to cancel request'}`);
+                }
+            } catch (error) {
+                console.error('Failed to cancel request:', error);
+                alert('Failed to connect to the server. Please try again later.');
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+    </script>
 </body>
 </html>
