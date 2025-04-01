@@ -230,15 +230,40 @@
             font-size: 0.8rem;
         }
 
-.folder-icon {
-    width: 20px;
-    height: 20px;
-}
+        .folder-icon {
+            width: 20px;
+            height: 20px;
+        }
 
-/* If using SVG and you want to change its color */
-.folder-icon {
-    stroke: white; /* or fill: white; depending on how the SVG is structured */
-}
+        /* If using SVG and you want to change its color */
+        .folder-icon {
+            stroke: white; /* or fill: white; depending on how the SVG is structured */
+        }
+        
+        /* Loader styling */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast message styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
     </style>
 </head>
 <body>
@@ -248,12 +273,20 @@
             <p class="tagline">"Connecting Books, Connecting Minds."</p>
         </div>
         <div class="nav-right">
-                <button onclick="location.href='addbook.html'"><i class="fa fa-book"></i></button>
-                <button onclick="location.href='profile.html'"><i class="fa fa-user-circle-o"></i></button> 
-                <button id="bicon"><a href="index.html" style="text-decoration: none;color: white;"><i class="fa fa-power-off"></i></a></button>
+            <button onclick="location.href='addbook.html'"><i class="fa fa-book"></i></button>
+            <button id="profileBtn"><i class="fa fa-user-circle-o"></i></button> 
+            <button id="logoutBtn"><i class="fa fa-power-off"></i></button>
         </div>
     </header>
 
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container"></div>
+
+     <!-- Quote Box -->
+     <div class="quote-box">
+        <h3>Literary Wisdom</h3>
+        <p id="quote">Loading quote...</p>
+    </div>
 
     <!-- Main Content -->
     <div class="container">
@@ -263,182 +296,356 @@
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search books...">
-                    <button class="btn btn-primary" type="button">Search</button>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search books...">
+                    <button class="btn btn-primary" id="searchBtn" type="button">Search</button>
                 </div>
             </div>
-            <!--
             <div class="col-md-6">
-                <select class="form-select">
-                    <option selected>All Categories</option>
-                    <option>Fiction</option>
-                    <option>Non-Fiction</option>
-                    <option>Science Fiction</option>
-                    <option>Mystery</option>
-                    <option>Biography</option>
+                <select class="form-select" id="categoryFilter">
+                    <option selected value="">All Categories</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Biography">Biography</option>
                 </select>
             </div>
-            -->
         </div>
         
+        <!-- Loader -->
+        <div class="loader" id="loader"></div>
         
         <!-- Books Grid -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <!-- Book 1 -->
-            <div class="col">
-                <div class="card">
-                    <span class="book-category">Non-Fiction</span>
-                    <img src="it ends with us.webp" class="card-img-top card-img-bottom" alt="Book Cover">
-                    <div class="card-body">
-                        <h5 class="card-title">It ends with us</h5>
-                        <p class="book-author">By Collene Hoover</p>
-                        <p class="card-text">It explores themes of domestic violence and emotional abuse.</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Book 2 -->
-            <div class="col">
-                <div class="card">
-                    <span class="book-category">Non-Fiction</span>
-                    <img src="Can we.jpg" class="card-img-top" alt="Book Cover">
-                    <div class="card-body">
-                        <h5 class="card-title">Can We Be Strangers Again</h5>
-                        <p class="book-author">Shrijeet Shandilya</p>
-                        <p class="card-text">A book about friendship, love, betrayal and choices in college life.</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Book 3 -->
-            <div class="col">
-                <div class="card">
-                    <span class="book-category">Non-Fiction</span>
-                    <img src="secret.jpg"  class="card-img-top" alt="Book Cover">
-                    <div class="card-body">
-                        <h5 class="card-title">The Secret</h5>
-                        <p class="book-author">By Rhonda Byrne</p>
-                        <p class="card-text">It is based on the law of attraction.</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Book 4 -->
-            <div class="col">
-                <div class="card">
-                    <span class="book-category">Non-fiction</span>
-                    <img src="atomic.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title">Atomic Habits</h5>
-                        <p class="book-author">By James Clear</p>
-                        <p class="card-text">Most practical and insightful book on habit formation</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
-                           <!-- <button class="btn btn-outline-secondary">Details</button> -->
-                        
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Book 4 -->
-            <div class="col">
-                <div class="card">
-                    <span class="book-category">Fiction</span>
-                    <img src="moby-dick.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title">Moby-Dick</h5>
-                        <p class="book-author">By Herman Melville</p>
-                        <p class="card-text">A story of a whale and the mad man who hunted it.</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary"><a href="requests.html" style="text-decoration: none; color: white;">Add Request</a></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" id="booksContainer">
+            <!-- Books will be populated dynamically here -->
+        </div>
         
-        <!-- Pagination 
+        <!-- Pagination -->
         <nav class="my-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- Pagination will be generated dynamically -->
             </ul>
         </nav>
-         -->
     </div>
    
-    
-    <!-- Footer 
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Book Library</h5>
-                    <p>Your source for the best books across all genres.</p>
+    <!-- Book Request Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="requestModalLabel">Request Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">Home</a></li>
-                        <li><a href="#" class="text-white">About Us</a></li>
-                        <li><a href="#" class="text-white">Contact</a></li>
-                        <li><a href="#" class="text-white">Privacy Policy</a></li>
-                    </ul>
+                <div class="modal-body">
+                    <form id="requestForm">
+                        <input type="hidden" id="bookId" name="bookId">
+                        <div class="mb-3">
+                            <label for="requestMessage" class="form-label">Message to Owner</label>
+                            <textarea class="form-control" id="requestMessage" rows="3" placeholder="Tell the owner why you'd like to borrow this book..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestDuration" class="form-label">Borrow Duration (days)</label>
+                            <input type="number" class="form-control" id="requestDuration" min="1" max="30" value="7">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+                    </form>
                 </div>
-                <div class="col-md-4">
-                    <h5>Newsletter</h5>
-                    <p>Subscribe to our newsletter for updates on new releases.</p>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email address">
-                        <button class="btn btn-primary" type="button">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-3">
-                <p class="mb-0">&copy; 2025 Book Library. All rights reserved.</p>
             </div>
         </div>
-    </footer>
-    -->
-   
-   
-
-
+    </div>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Check if user is logged in
         document.addEventListener("DOMContentLoaded", () => {
+            checkAuthStatus();
             fetchQuote();
+            loadBooks();
+            setupEventListeners();
         });
 
+        // Authentication status check
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html'; // Redirect to login page if not logged in
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Profile button
+            document.getElementById('profileBtn').addEventListener('click', () => {
+                window.location.href = 'profile.html';
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        console.log("No token found, redirecting to login...");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    fetch('http://localhost:5001/api/users/logout', {
+        method: 'POST', // Change this if your API uses a different method
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Logout failed: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(() => {
+        // Remove token and redirect to login page
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+    })
+    .catch(error => {
+        console.error("Error logging out:", error);
+        alert("Failed to log out. Please try again.");
+    });
+});
+
+
+            
+            // Search button
+            document.getElementById('searchBtn').addEventListener('click', () => {
+                loadBooks(1); // Reset to first page when searching
+            });
+            
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', () => {
+                loadBooks(1); // Reset to first page when filtering
+            });
+            
+            // Request form submission
+            document.getElementById('requestForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                submitBookRequest();
+            });
+        }
+
+        // Fetch quotes from API
         function fetchQuote() {
-    fetch("https://zenquotes.io/api/random")
-        .then(response => response.json())
-        .then(data => {
-            let quoteData = data[0];  // Access the first quote from the array
-            document.getElementById("quote").innerText = `"${quoteData.q}" - ${quoteData.a}`;
-        })
-        .catch(() => {
-            // Fallback quote in case of an error
-            document.getElementById("quote").innerText = `"A book is a dream that you hold in your hands." - Neil Gaiman`;
-        });
-}
+            fetch("https://zenquotes.io/api/random",
+                  {
+                    mode: 'no-cors'
+                  })
+                .then(response => response.json())
+                .then(data => {
+                    let quoteData = data[0];
+                    document.getElementById("quote").innerText = `"${quoteData.q}" - ${quoteData.a}`;
+                })
+                .catch(() => {
+                    // Fallback quote in case of an error
+                    document.getElementById("quote").innerText = `"A book is a dream that you hold in your hands." - Neil Gaiman`;
+                });
+        }
+        
+        // Load books from backend
+        function loadBooks(page = 1) {
+            const searchTerm = document.getElementById('searchInput').value;
+            const category = document.getElementById('categoryFilter').value;
+            const loader = document.getElementById('loader');
+            
+            // Show loader
+            loader.style.display = 'block';
+            
+            // Get token from localStorage
+            const token = localStorage.getItem('token');
+            
+            // Construct API URL with query parameters
+            let apiUrl = `http://localhost:5001/api/books/allBooks?page=${page}`;
+            if (searchTerm) apiUrl += `&search=${encodeURIComponent(searchTerm)}`;
+            if (category) apiUrl += `&category=${encodeURIComponent(category)}`;
+            
+            fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch books');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("API Response:", data); // Debugging: Log full response
+                if (!Array.isArray(data)) {
+                throw new Error('Invalid response structure from API');
+    }
+                renderBooks(data);
+                renderPagination(1, page);
+                loader.style.display = 'none';
+            })
+            .catch(error => {
+                console.log(error);
+                showToast('Error: ' + error.message, 'error');
+                loader.style.display = 'none';
+            });
+        }
+        
+        // Render books to the DOM
+        function renderBooks(books) {
+            const container = document.getElementById('booksContainer');
+            container.innerHTML = '';
+            
+            if (books.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><h3>No books found</h3></div>';
+                return;
+            }
+            
+            books.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'col';
+                bookCard.innerHTML = `
+                    <div class="card">
+                        <span class="book-category">${book.category}</span>
+                        <img src="uploads/${book.frontPage || 'default-book.jpg'}" class="card-img-top" alt="${book.title} Cover">
+                        <div class="card-body">
+                            <h5 class="card-title">${book.title}</h5>
+                            <p class="book-author">By ${book.author}</p>
+                            <p class="card-text">${book.desc}</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary request-btn" data-book-id="${book._id}" data-bs-toggle="modal" data-bs-target="#requestModal">Request</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(bookCard);
+            });
+            
+            // Add event listeners to request buttons
+            document.querySelectorAll('.request-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const bookId = e.target.getAttribute('data-book-id');
+                    document.getElementById('bookId').value = bookId;
+                });
+            });
+        }
+        
+        // Render pagination
+        function renderPagination(totalPages, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>`;
+            pagination.appendChild(prevLi);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                pagination.appendChild(pageLi);
+            }
+            
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>`;
+            pagination.appendChild(nextLi);
+            
+            // Add event listeners to pagination links
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = parseInt(e.target.getAttribute('data-page'));
+                    if (!isNaN(page)) {
+                        loadBooks(page);
+                    }
+                });
+            });
+        }
+        
+        // Submit book request
+        function submitBookRequest() {
+            const bookId = document.getElementById('bookId').value;
+           // const message = document.getElementById('requestMessage').value;
+           // const duration = document.getElementById('requestDuration').value;
+            const token = localStorage.getItem('token');
+            
+            // Show loader
+            document.getElementById('loader').style.display = 'block';
+            
+            fetch('http://localhost:5001/api/books/request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    bookId
+                   
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to create request');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+                modal.hide();
+                
+                // Show success message
+                showToast('Request sent successfully!', 'success');
+                
+                // Hide loader
+                document.getElementById('loader').style.display = 'none';
+            })
+            .catch(error => {
+                showToast('Error: ' + error.message, 'error');
+                document.getElementById('loader').style.display = 'none';
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast show ${type === 'error' ? 'bg-danger' : 'bg-success'} text-white`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <strong class="me-auto">LitLink</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto close after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+            
+            // Add event listener to close button
+            toast.querySelector('.btn-close').addEventListener('click', () => {
+                toast.remove();
+            });
+        }
     </script>
 </body>
 </html>

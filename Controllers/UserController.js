@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const Book = require("../models/bookModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 //@desc register user
 //@route POST /api/users/register
 //@access Public
@@ -126,4 +127,19 @@ const getmybooks= asyncHandler(async(req, res) => {
     }
 })
     ;
-module.exports = {registerUser, loginUser, getUserProfile, getmybooks};
+
+    const logout=asyncHandler(async(req, res) => {
+        const userId=req.userId.id;
+        try {
+            if(!userId){
+                return  res.status(500).json({ error: "Un-authorized" });   
+            }
+            res.clearCookie('jwtToken', { path: '/' });
+            res.status(200).json({ message: "Logged out successfully" });
+        } catch (error) {
+            console.log("error in logout : ",error);
+            resp.status(500).json({ error: "Internal server error in logout" });
+        }
+    });
+
+module.exports = {registerUser, loginUser, getUserProfile, getmybooks,logout};
