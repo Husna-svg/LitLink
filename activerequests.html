@@ -3,221 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Request Management</title>
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="signupstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ff 100%);
             color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            margin: 0;
+            padding: 0;
+            font-weight: 500;
         }
-        .request-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .book-info {
-            margin-bottom: 15px;
-        }
-        .book-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .book-author {
-            font-style: italic;
-            color: #555;
-            margin-bottom: 15px;
-        }
-        .request-details {
+
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
-        .requester {
-            color: #666;
-        }
-        .action-buttons {
+
+        .logo {
             display: flex;
-            gap: 10px;
+            align-items: center;
         }
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
+
+        .logo h1 {
+            color: #ecf0f1;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin: 0;
+            white-space: nowrap;
         }
-        .btn-accept {
-            background-color: #2ecc71;
-            color: white;
+
+        .logo h1 span {
+            color: #ffd700;
+            font-weight: 800;
         }
-        .btn-reject {
-            background-color: #e74c3c;
-            color: white;
+
+        .tagline {
+            font-size: 18px;
+            font-style: italic;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-left: 15px;
         }
-        .pending-label {
-            display: inline-block;
-            background-color: #f39c12;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-left: 10px;
+
+        .signup-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 30px;
+            margin: 100px auto 50px;
+            text-align: center;
         }
-        .filter-options {
+
+        .signup-container h2 {
             margin-bottom: 20px;
+            color: #2c3e50;
         }
-        .new-request-btn {
-            background-color: #3498db;
-            color: white;
-            padding: 10px 16px;
-            border: none;
+
+        .signup-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .signup-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
-            font-weight: 500;
-            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .signup-container button:hover {
+            background: linear-gradient(to right, #2980b9, #2c3e50);
         }
     </style>
 </head>
 <body>
-    <h1>Book Request Management</h1>
-    <div class="filter-options">
-        <select id="filter-status">
-            <option value="all">All Requests</option>
-            <option value="pending" selected>Pending Requests</option>
-            <option value="approved">Approved Requests</option>
-            <option value="rejected">Rejected Requests</option>
-        </select>
-    </div>
+    <header>
+        <div class="logo">
+            <h1 class="title">📚 Welcome to <span>LitLink</span> 📖</h1>
+            <p class="tagline">"Connecting Books, Connecting Minds."</p>
+        </div>
+    </header>
     
-   
-        <!-- Remove hardcoded requests -->
-<div class="requests-container"></div>
-
-        
-        
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.requests-container');
-
-    async function fetchRequests() {
-        try {
-            const token=localStorage.getItem('token'); // Get JWT Token
-            const response = await fetch('http://localhost:5001/api/books/requests', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                 // Adjust URL as needed
-            if (!response.ok) throw new Error('Failed to fetch requests');
-            const requests = await response.json();
-
-            container.innerHTML = ''; // Clear existing requests
-
-            requests.forEach(request => {
-                const requestElement = document.createElement('div');
-                requestElement.className = 'request-card';
-                requestElement.innerHTML = `
-                    <div class="book-info">
-                        <div class="book-title">${request.title}</div>
-                        <div class="book-author">By: ${request.author || 'Unknown Author'}</div>
-                    </div>
-                    <div class="request-details">
-                        <div class="requester">Requested by: ${request.requester.name}
-                            
-                        </div>
-                        <div class="action-buttons" ${request.isApproved} ? 'style="display:none;"' : ''}>
-                            <button class="btn btn-accept" data-id="${request._id}">Accept</button>
-                            <button class="btn btn-reject" data-id="${request._id}">Reject</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(requestElement);
-            });
-
-            addEventListeners();
-        } catch (error) {
-            console.error('Error fetching requests:', error);
-        }
-    }
-
-    fetchRequests();
-});
-
-        // Add event listeners for the buttons
-        function addEventListeners() {
-    document.querySelectorAll('.btn-accept').forEach(button => {
-        button.addEventListener('click', async function () {
-            const bookId = this.dataset.bookId;
-            const token = localStorage.getItem('token'); // Get JWT Token
-            try {
-                const response = await fetch(`http://localhost:5001/api/request/approve`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json',
-                        "authorization": `Bearer ${token}`
-                    },body: JSON.stringify({
-                        bookId
-                     })
-                });
-                if (!response.ok) throw new Error('Failed to approve request');
-                
-                alert('Request approved!');
-                fetchRequests(); // Refresh the list
-            } catch (error) {
-                console.error('Error approving request:', error);
-            }
-        });
-    });
-
-    document.querySelectorAll('.btn-reject').forEach(button => {
-        button.addEventListener('click', async function () {
-            const bookId = this.dataset.bookId;
-            const token = localStorage.getItem('token'); // Get JWT Token
-            try {
-                const response = await fetch(`http://localhost:5001/api/request/reject`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' ,
-                      "authorization": `Bearer ${token}`},
-                    body: JSON.stringify({
-                        bookId
-                    })
-                });
-                if (!response.ok) throw new Error('Failed to reject request');
-
-                alert('Request rejected!');
-                fetchRequests(); // Refresh the list
-            } catch (error) {
-                console.error('Error rejecting request:', error);
-            }
-        });
-    });
-}
-
-        
-        // Filter functionality
-        document.getElementById('filter-status').addEventListener('change', function() {
-            // This would filter the requests based on status in a real application
-            alert('Filter changed to: ' + this.value);
-        });
-        
-        // New request button
-       /* document.querySelector('.new-request-btn').addEventListener('click', function() {
-            alert('New book request form would open here');
-        });*/
-    </script>
+    <div class="signup-container">
+        <h2>Signup</h2>
+        <form id="signupForm">
+            <input type="text" id="fullname" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <input type="text" id="location" placeholder="Location" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Login</a></p>
+        <p id="errorMessage" class="error"></p>
+        <p id="successMessage" class="success" style="color: green;"></p>
+    </div>
+    <script src="signupscript.js"></script>
 </body>
 </html>
