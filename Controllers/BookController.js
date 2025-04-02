@@ -23,12 +23,12 @@ const getBooks =asyncHandler(async (req, res) => {
 
     // Filtering by category
     if (req.query.category) {
-      query.category = req.query.category;
+      query.category ={ $regex: `^${req.query.category}$`, $options: 'i' };
     }
-    //console.log("Query:", query); // Debugging query
+    console.log("Query:", query); // Debugging query
     // Fetch books and populate owner details
     const books = await Book.find(query).populate('owner', 'name email');
-   // console.log("Books Found:", books); // Debugging response
+   //console.log("Books Found:", books); // Debugging response
     res.status(200).json(books);
   } catch (error) {
     console.error("Error fetching books:", error);
