@@ -165,7 +165,7 @@
             const bookId = this.dataset.bookId;
             const token = localStorage.getItem('token'); // Get JWT Token
             try {
-                const response = await fetch(`http://localhost:5001/api/books/approve`, {
+                const response = await fetch(`http://localhost:5001/api/request/approve`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json',
                         "authorization": `Bearer ${token}`
@@ -188,7 +188,7 @@
             const bookId = this.dataset.bookId;
             const token = localStorage.getItem('token'); // Get JWT Token
             try {
-                const response = await fetch(`http://localhost:5001/api/books/reject`, {
+                const response = await fetch(`http://localhost:5001/api/request/reject`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' ,
                       "authorization": `Bearer ${token}`},

@@ -23,6 +23,7 @@ app.use(express.json());
 app.use('/api/books', require('./routes/BookRoutes'));
 app.use('/api/users', require('./routes/UserRoutes'));
 app.use('/api/chat', require('./routes/ChatRoutes'));
+app.use('/api/request', require('./routes/RequestRoutes'));
 
 //const chatRoutes=require('./Router/chatRoutes')
 //const messageRoutes=require('./Router/messageRoute')
