@@ -41,7 +41,8 @@ const getBooks =asyncHandler(async (req, res) => {
 //@access Private
 
 const getBook = asyncHandler(async(req, res) => {
-  const {id}=req.params
+  const {id}=req.params;
+  console.log("Received bookId:", id); // Debugging: Check if req.body is received
   try {
       const books = await Book.findOne({ isAvailable: true,_id:id }).populate('owner', 'name email');
       if(!books){

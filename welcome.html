@@ -333,7 +333,7 @@
         </nav>
     </div>
    
-   <!-- Book Details and Request Modal -->
+  <!-- Book Details and Request Modal -->
 <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -343,7 +343,7 @@
             </div>
             <div class="modal-body">
                 <!-- Book Details Section -->
-                <div class="book-details-container mb-4">
+                <div class="book-details-container">
                     <div class="row">
                         <!-- Book Cover Images -->
                         <div class="col-md-4">
@@ -370,32 +370,16 @@
                                 <h6>Description:</h6>
                                 <p id="bookDescription" class="text-muted"></p>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
                 
-                <!-- Request Form Section (Initially Hidden) 
-                <div id="requestFormSection" style="display: none;">
-                    <hr>
-                    <h5 class="mb-3">Request to Borrow</h5>
-                    <form id="requestForm">
-                        <input type="hidden" id="bookId" name="bookId">
-                        <div class="mb-3">
-                            <label for="requestMessage" class="form-label">Message to Owner</label>
-                            <textarea class="form-control" id="requestMessage" rows="3" placeholder="Tell the owner why you'd like to borrow this book..."></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="requestDuration" class="form-label">Borrow Duration (days)</label>
-                            <input type="number" class="form-control" id="requestDuration" min="1" max="30" value="7">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Submit Request</button>
-                    </form>
-                </div>-->
+                <!-- Hidden book ID field -->
+                <input type="hidden" id="bookId" name="bookId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+                <button type="button" id="submitRequestBtn" class="btn btn-primary">Submit Request</button>
             </div>
         </div>
     </div>
@@ -474,10 +458,10 @@
             });
             
             // Request form submission
-            document.getElementById('requestForm').addEventListener('submit', (e) => {
+          /*  document.getElementById('requestForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 submitBookRequest();
-            });
+            });*/
         }
 
         // Fetch quotes from API
@@ -576,6 +560,7 @@
                 button.addEventListener('click', (e) => {
                     const bookId = e.target.getAttribute('data-book-id');
                     document.getElementById('bookId').value = bookId;
+                    openBookDetailsModal(bookId);
                 });
             });
         }
@@ -617,6 +602,105 @@
             });
         }
         
+        // Function to populate and open the book details modal
+// Function to populate and open the book details modal
+function openBookDetailsModal(bookId) {
+    // Set the book ID for later use
+    document.getElementById('bookId').value = bookId;
+    
+    // Get book details from API
+    const token = localStorage.getItem('token');
+    
+    fetch(`http://localhost:5001/api/books/${bookId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        method: 'GET'
+
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch book details');
+        }
+        return response.json();
+    })
+    .then(book => {
+        // Populate the modal with book details
+        document.getElementById('bookTitle').textContent = book.title;
+        document.getElementById('bookAuthor').textContent = book.author;
+        document.getElementById('bookCategory').textContent = book.category;
+        document.getElementById('bookDescription').textContent = book.desc || 'No description available';
+        
+        // Owner information
+        document.getElementById('bookOwner').textContent = book.owner?.name || 'Unknown';
+        document.getElementById('bookLocation').textContent = book.location || 'Not specified';
+        
+        // Cover images
+        if (book.frontPage) {
+            document.getElementById('frontCoverImg').src = "uploads/" + book.frontPage;
+            document.getElementById('frontCoverImg').style.display = 'block';
+        } else {
+            document.getElementById('frontCoverImg').src = 'path/to/placeholder-image.jpg';
+        }
+        
+        if (book.backPage) {
+            document.getElementById('backCoverImg').src = "uploads/" + book.backPage;
+            document.getElementById('backCoverImg').style.display = 'block';
+        } else {
+            document.getElementById('backCoverImg').src = 'path/to/placeholder-image.jpg';
+        }
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('requestModal'));
+        modal.show();
+    })
+    .catch(error => {
+        console.error("Error fetching book details:", error);
+        showToast('Error: ' + error.message, 'error');
+    });
+}
+
+// Event listener for the submit request button
+document.getElementById('submitRequestBtn').addEventListener('click', function() {
+    const bookId = document.getElementById('bookId').value;
+    const token = localStorage.getItem('token');
+    
+    // Using default values for message and duration since they're not being collected
+   
+    
+    fetch('http://localhost:5001/api/books/request', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            bookId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to submit request');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+        modal.hide();
+        
+        // Show success message
+        showToast('Request submitted successfully!', 'success');
+        
+        // Optionally refresh the book list
+        loadBooks();
+    })
+    .catch(error => {
+        console.error("Error submitting request:", error);
+        showToast('Error: ' + error.message, 'error');
+    });
+});
         // Submit book request
         function submitBookRequest() {
             const bookId = document.getElementById('bookId').value;
