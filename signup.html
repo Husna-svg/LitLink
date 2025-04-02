@@ -5,8 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup Page</title>
     <link rel="stylesheet" href="signupstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ff 100%);
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            font-weight: 500;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            color: #ecf0f1;
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .logo h1 span {
+            color: #ffd700;
+            font-weight: 800;
+        }
+
+        .tagline {
+            font-size: 18px;
+            font-style: italic;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-left: 15px;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 30px;
+            margin: 100px auto 50px;
+            text-align: center;
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .signup-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .signup-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .signup-container button:hover {
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <h1 class="title">📚 Welcome to <span>LitLink</span> 📖</h1>
+            <p class="tagline">"Connecting Books, Connecting Minds."</p>
+        </div>
+    </header>
+    
     <div class="signup-container">
         <h2>Signup</h2>
         <form id="signupForm">
@@ -14,13 +116,12 @@
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
             <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            <input type="location" id="location" placeholder="location" required>
-
+            <input type="text" id="location" placeholder="Location" required>
             <button type="submit">Sign Up</button>
         </form>
+        <p>Already have an account? <a href="login.html">Login</a></p>
         <p id="errorMessage" class="error"></p>
         <p id="successMessage" class="success" style="color: green;"></p>
-
     </div>
     <script src="signupscript.js"></script>
 </body>
