@@ -101,70 +101,112 @@
         </select>
     </div>
     
-    <div class="requests-container">
-        <!-- Request 1 -->
-        <div class="request-card">
-            <div class="book-info">
-                <div class="book-title">The Secret</div>
-                <div class="book-author">By: Rhonda Byrne</div>
-            </div>
-            <div class="request-details">
-                <div class="requester">Requested by: Ram<span class="pending-label">Pending</span></div>
-                <div class="action-buttons">
-                    <button class="btn btn-accept">Accept</button>
-                    <button class="btn btn-reject">Reject</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Request 2 -->
-        <div class="request-card">
-            <div class="book-info">
-                <div class="book-title">It ends with us</div>
-                <div class="book-author">Collene Hoover</div>
-            </div>
-            <div class="request-details">
-                <div class="requester">Requested by: Anu<span class="pending-label">Pending</span></div>
-                <div class="action-buttons">
-                    <button class="btn btn-accept">Accept</button>
-                    <button class="btn btn-reject">Reject</button>
-                </div>
-            </div>
-        </div>
+   
+        <!-- Remove hardcoded requests -->
+<div class="requests-container"></div>
+
         
         
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.requests-container');
+
+    async function fetchRequests() {
+        try {
+            const token=localStorage.getItem('token'); // Get JWT Token
+            const response = await fetch('http://localhost:5001/api/books/requests', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                 // Adjust URL as needed
+            if (!response.ok) throw new Error('Failed to fetch requests');
+            const requests = await response.json();
+
+            container.innerHTML = ''; // Clear existing requests
+
+            requests.forEach(request => {
+                const requestElement = document.createElement('div');
+                requestElement.className = 'request-card';
+                requestElement.innerHTML = `
+                    <div class="book-info">
+                        <div class="book-title">${request.title}</div>
+                        <div class="book-author">By: ${request.author || 'Unknown Author'}</div>
+                    </div>
+                    <div class="request-details">
+                        <div class="requester">Requested by: ${request.requester.name}
+                            
+                        </div>
+                        <div class="action-buttons" ${request.isApproved} ? 'style="display:none;"' : ''}>
+                            <button class="btn btn-accept" data-id="${request._id}">Accept</button>
+                            <button class="btn btn-reject" data-id="${request._id}">Reject</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(requestElement);
+            });
+
+            addEventListeners();
+        } catch (error) {
+            console.error('Error fetching requests:', error);
+        }
+    }
+
+    fetchRequests();
+});
+
         // Add event listeners for the buttons
-        document.querySelectorAll('.btn-accept').forEach(button => {
-            button.addEventListener('click', function() {
-                const card = this.closest('.request-card');
-                const pendingLabel = card.querySelector('.pending-label');
-                pendingLabel.textContent = 'Approved';
-                pendingLabel.style.backgroundColor = '#2ecc71';
+        function addEventListeners() {
+    document.querySelectorAll('.btn-accept').forEach(button => {
+        button.addEventListener('click', async function () {
+            const bookId = this.dataset.bookId;
+            const token = localStorage.getItem('token'); // Get JWT Token
+            try {
+                const response = await fetch(`http://localhost:5001/api/books/approve`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json',
+                        "authorization": `Bearer ${token}`
+                    },body: JSON.stringify({
+                        bookId
+                     })
+                });
+                if (!response.ok) throw new Error('Failed to approve request');
                 
-                // Hide the action buttons
-                this.parentElement.style.display = 'none';
-                
-                // Show notification
                 alert('Request approved!');
-            });
+                fetchRequests(); // Refresh the list
+            } catch (error) {
+                console.error('Error approving request:', error);
+            }
         });
-        
-        document.querySelectorAll('.btn-reject').forEach(button => {
-            button.addEventListener('click', function() {
-                const card = this.closest('.request-card');
-                const pendingLabel = card.querySelector('.pending-label');
-                pendingLabel.textContent = 'Rejected';
-                pendingLabel.style.backgroundColor = '#e74c3c';
-                
-                // Hide the action buttons
-                this.parentElement.style.display = 'none';
-                
-                // Show notification
+    });
+
+    document.querySelectorAll('.btn-reject').forEach(button => {
+        button.addEventListener('click', async function () {
+            const bookId = this.dataset.bookId;
+            const token = localStorage.getItem('token'); // Get JWT Token
+            try {
+                const response = await fetch(`http://localhost:5001/api/books/reject`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' ,
+                      "authorization": `Bearer ${token}`},
+                    body: JSON.stringify({
+                        bookId
+                    })
+                });
+                if (!response.ok) throw new Error('Failed to reject request');
+
                 alert('Request rejected!');
-            });
+                fetchRequests(); // Refresh the list
+            } catch (error) {
+                console.error('Error rejecting request:', error);
+            }
         });
+    });
+}
+
         
         // Filter functionality
         document.getElementById('filter-status').addEventListener('change', function() {
@@ -173,9 +215,9 @@
         });
         
         // New request button
-        document.querySelector('.new-request-btn').addEventListener('click', function() {
+       /* document.querySelector('.new-request-btn').addEventListener('click', function() {
             alert('New book request form would open here');
-        });
+        });*/
     </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-const { getBooks, getBook, addBook,reqBook,deleteBook ,viewRequests,approveRequest,mysent} = require('../Controllers/BookController');
+const { getBooks, getBook, addBook,reqBook,deleteBook ,viewRequests,approveRequest,mysent,reject} = require('../Controllers/BookController');
 const validateTokenHandler=require("../middleware/validateTokenHandler");
 const upload=require("../middleware/upload");
 router.route('/allBooks').get(validateTokenHandler , getBooks);
@@ -16,7 +16,7 @@ router.route('/mysent').get(validateTokenHandler,mysent);
 router.route('/:id').get(validateTokenHandler,getBook);
 router.route('/approve').put(validateTokenHandler,approveRequest);
 router.route('/').delete(validateTokenHandler,deleteBook);
-
+router.route('/reject').put(validateTokenHandler,reject);
 module.exports=router;
 
 

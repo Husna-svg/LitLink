@@ -301,5 +301,46 @@ console.log("Book Requester:", book.requester);
     res.status(500).json({ message: 'Server error while fetching sent book requests' });
 }
 });
-module.exports = {getBooks, getBook, addBook, reqBook, deleteBook, viewRequests, approveRequest,mysent};
+
+//@desc Reject a request
+//@route PUT /api/books/reject/
+//@access Private
+const reject = asyncHandler(async(req, res) => {
+  const userId = req.userId.id;
+    const { bookId } = req.body;
+
+    try {
+        if (!userId) {
+            return res.status(401).json({ error: 'Un-authorized' });
+        }
+        
+        const book = await Book.findById(bookId).populate("requester", "name email").populate("owner", "name email");
+        console.log("Book Data:", book);
+console.log("Book Requester:", book.requester);
+  
+          if(!book){
+              return res.status(404).json({ error: 'Book not found' });
+          }
+          if (!book.requester) {
+            return res.status(400).json({ error: "No requester found for this book" });
+          }
+          book.isApproved = false;
+          book.holder = null;
+          book.requester = null;
+          book.isAvailable = true;
+          // console.log(book);
+          await book.save();
+          const updatedBook = await Book.findById(bookId).populate("requester", "name email").populate("owner", "name email").populate("holder", "name email");
+          if(!updatedBook){
+              return res.status(404).json({ error: 'Book not found' });
+          }
+          res.status(200).json({ message:`Request rejected successfully`, updatedBook });
+      } catch (error) {
+        console.log(error);
+          res.status(500).json({ error: 'Server error while uploading book' });
+      }
+    }
+);
+
+module.exports = {getBooks, getBook, addBook, reqBook, deleteBook, viewRequests, approveRequest,mysent,reject};
 
